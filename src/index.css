@@ -1,38 +1,110 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+
 body {
   margin: 0;
   padding: 0;
-  font-family: Helvetica, Arial, sans-serif;
-  display: grid;
-  background: #333e5a;
+  font-family: Montserrat, sans-serif;
+  color: white;
+
+  /* From Ui Gradients */
+  background: #0f2027; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #0f2027,
+    #203a43,
+    #2c5364
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #0f2027,
+    #203a43,
+    #2c5364
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.App {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 a {
   color: #fff;
 }
 
-header {
-  background: #f0293e;
-  color: #fff;
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 400px;
+  height: 80vh;
+  border-radius: 5px;
+  box-shadow: 3px 3px 5px 6px rgba(0, 0, 0, 0.3);
   text-align: center;
 }
 
-main {
-  min-height: 80vh;
-  background: #fff;
-}
-main .controls {
-  text-align: center;
-  padding: 0.5em 0;
-  background: #333e5a;
+.header {
   color: #fff;
+  background: black;
+  text-align: center;
+  margin: 0;
+  padding-top: 20px;
+  height: 50px;
+  text-transform: uppercase;
 }
-main canvas {
+
+
+
+.audio-visualizer {
+  height: 200px;
+}
+
+canvas {
   padding: 20px;
   margin: 0 auto;
   display: block;
 }
-footer {
-  background: #333e5a;
-  color: #fff;
+
+.timeContainer {
+  height: 100px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.controls {
   text-align: center;
+  width: 100%;
+  padding: 0.5em 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+button {
+  background: black;
+  color: white;
+  border: none;
+  margin: 10px;
+  font-size: 30px;
+  width: 200px;
+  height: 50px;
+  border-radius: 30px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+button:hover {
+  background: rgb(23, 23, 23);
+}
+
+button:focus {
+  outline: none;
+}
+
+@media only screen and (max-width: 500px) {
+  .container {
+    width: 95vw;
+  }
 }

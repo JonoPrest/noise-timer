@@ -1,48 +1,75 @@
-import React, { Component } from 'react';
-import AudioAnalyser from './AudioAnalyser';
+import React, { useState, useEffect } from "react";
+import AudioAnalyser from "./AudioAnalyser";
+import hark from "hark";
+import { useStopwatch } from "./Timer";
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      audio: null
-    };
-    this.toggleMicrophone = this.toggleMicrophone.bind(this);
-  }
+const App = () => {
+  const [audio, setAudio] = useState(null);
+  const [color, setColor] = useState("white");
 
-  async getMicrophone() {
-    const audio = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: false
-    });
-    this.setState({ audio });
-  }
+  const {
+    isRunning,
+    elapsedTime,
+    noiseTime,
+    startNoiseTimer,
+    stopNoiseTimer,
+    startTimer,
+    stopTimer,
+    resetTimer,
+  } = useStopwatch();
 
-  stopMicrophone() {
-    this.state.audio.getTracks().forEach(track => track.stop());
-    this.setState({ audio: null });
-  }
+  useEffect(() => {
+    navigator.mediaDevices
+      .getUserMedia({
+        audio: true,
+        video: false,
+      })
+      .then((audioStream) => {
+        setAudio(audioStream);
+        const sound = hark(audioStream);
+        sound.setInterval(10);
+        sound.on("speaking", function () {
+          setColor("red");
+          startNoiseTimer();
+        });
 
-  toggleMicrophone() {
-    if (this.state.audio) {
-      this.stopMicrophone();
-    } else {
-      this.getMicrophone();
-    }
-  }
+        sound.on("stopped_speaking", function () {
+          setColor("white");
+          stopNoiseTimer();
+        });
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
-  render() {
-    return (
-      <div className="App">
-        <div className="controls">
-          <button onClick={this.toggleMicrophone}>
-            {this.state.audio ? 'Stop microphone' : 'Get microphone input'}
-          </button>
+  const handleStartStop = () => {
+    isRunning ? stopTimer() : startTimer();
+  };
+
+  return (
+    <div className="App">
+      {/* container card*/}
+      <div className="container">
+        <h1 className="header">Noise Timer</h1>
+        <div className="audio-visualizer">
+          {audio ? <AudioAnalyser audio={audio} color={color} /> : <h1>Microphone Not Available</h1>}
         </div>
-        {this.state.audio ? <AudioAnalyser audio={this.state.audio} /> : ''}
+        <div className="timeContainer">
+          <div className="overAllTimeContainer">
+            <h3>Overall Time (s):</h3>
+            <h2>{elapsedTime}</h2>
+          </div>
+          <div className="noiseTimeContainer">
+            <h3>Noise Time (s):</h3>
+            <h2>{noiseTime}</h2>
+          </div>
+        </div>
+        <div className="controls">
+          <button onClick={handleStartStop}>{isRunning ? "Stop" : "Start"}</button>
+          <button onClick={resetTimer}>Reset</button>
+        </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default App;
